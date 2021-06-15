@@ -5,6 +5,7 @@ from tkinter import messagebox
 import rsaidnumber
 from dateutil import relativedelta
 from datetime import *
+import json
 
 from playsound import playsound
 
@@ -59,6 +60,8 @@ class LogIn:
             if len((self.id_entry.get())) != 13:
                 raise ValueError
             elif relativedelta.relativedelta(current_date, birthday).years >= 18:
+                info_entered = {'name': user, 'email': mail, 'id': ID}
+                self.text_to_file(info_entered )
                 messagebox.showinfo(message="You qualify to play! Let's get started.")
                 self.root.destroy()
                 import window_2
@@ -66,6 +69,12 @@ class LogIn:
                 messagebox.showerror(message='You are underage. Try again when you are 18.')
         except ValueError:
             messagebox.showerror(message='Enter a valid ID number.')
+
+    def text_to_file(self, text):
+        import json
+        text = json.dumps(text)
+        with open('user_info.txt', 'a+') as user_info:
+            user_info.write(text)
 
 
 LogIn(master)

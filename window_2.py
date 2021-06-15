@@ -1,3 +1,4 @@
+import random
 from tkinter import *
 from tkinter import messagebox
 from random import randint
@@ -19,14 +20,11 @@ class UserID:
         self.user_id = Label(root, text='User ID')
         self.user_id.place(relx=0.8, rely=0.1)
         self.user_id_entry = Entry(root, state='readonly')
-
-    def user_id(self):
-        user = main.LogIn.root.name_entry.get()
-        ID = main.LogIn.self.id_entry.get()
-        user_name = user + ID[9:-1]
+        file = open('user_info.txt', 'r')
+        print(file.read())
         self.user_id_entry.config(state='normal')
-        self.user_id_entry.insert(0, user_name)
-        self.user_id_entry(state='readonly')
+        self.user_id_entry.insert(0, file)
+        self.user_id_entry.config(state='readonly')
 
 
 class Lotto:
@@ -80,10 +78,10 @@ class Lotto:
         self.lotto6.place(relx=0.7, rely=0.7)
 
         self.lotto_numbers = []
-        for x in range(6):
-            self.lotto_numbers.append(randint(1, 49))
-            if randint(1, 49) in self.lotto_numbers:
-                self.lotto_numbers.remove(randint(1, 49))
+        while len(self.lotto_numbers) < 6:
+            number = random.randint(1, 49)
+            if number not in self.lotto_numbers:
+                self.lotto_numbers.append(number)
             print(self.lotto_numbers)
 
     def replay(self, entry_list):
@@ -111,26 +109,32 @@ class Lotto:
 
     def generate_lotto(self):
         self.lotto1.config(state='normal')
+        self.lotto1.delete(0, 'end')
         self.lotto1.insert(0, self.lotto_numbers[0])
         self.lotto1.config(state='readonly')
 
         self.lotto2.config(state='normal')
+        self.lotto2.delete(0, 'end')
         self.lotto2.insert(0, self.lotto_numbers[1])
         self.lotto2.config(state='readonly')
 
         self.lotto3.config(state='normal')
+        self.lotto3.delete(0, 'end')
         self.lotto3.insert(0, self.lotto_numbers[2])
         self.lotto3.config(state='readonly')
 
         self.lotto4.config(state='normal')
+        self.lotto4.delete(0, 'end')
         self.lotto4.insert(0, self.lotto_numbers[3])
         self.lotto4.config(state='readonly')
 
         self.lotto5.config(state='normal')
+        self.lotto5.delete(0, 'end')
         self.lotto5.insert(0, self.lotto_numbers[4])
         self.lotto5.config(state='readonly')
 
         self.lotto6.config(state='normal')
+        self.lotto6.delete(0, 'end')
         self.lotto6.insert(0, self.lotto_numbers[5])
         self.lotto6.config(state='readonly')
 
