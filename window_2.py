@@ -17,8 +17,8 @@ master.config(bg="#4ad66d")
 class UserID:
     def __init__(self, root):
         self.root = root
-        self.user_id = Label(root, text='User ID')
-        self.user_id.place(relx=0.8, rely=0.1)
+        self.user_id = Label(root, text='User ID:', fg='#506352', bg='#4ad66d')
+        self.user_id.place(relx=0.5, rely=0.1)
         self.user_id_entry = Entry(root, state='readonly')
         file = open('user_info.txt', 'r')
         print(file.read())
@@ -29,7 +29,9 @@ class UserID:
 
 class Lotto:
     def __init__(self, root):
-        self.select = Label(root, text='Select your lucky Lotto numbers:')
+        self.root = root
+
+        self.select = Label(root, text='Select your lucky Lotto numbers:', fg='#506352', bg='#4ad66d', font=20)
         self.select.place(relx=0.2, rely=0.2)
 
         self.num1 = Spinbox(root, from_=0, to=49, width=5, font=10)
@@ -50,13 +52,11 @@ class Lotto:
         self.num6 = Spinbox(root, from_=0, to=49, width=5, font=10)
         self.num6.place(relx=0.7, rely=0.3)
 
-        self.play_again = Button(root, text='Play again')
-        self.play_again.place(relx=0.2, rely=0.4)
+        self.reveal_lotto = Button(root, text='Reveal Lotto numbers', command=self.generate_lotto, fg='#506352',
+                                   bg='#47b553')
+        self.reveal_lotto.place(relx=0.4, rely=0.4)
 
-        self.reveal_lotto = Button(root, text='Reveal Lotto numbers', command=self.generate_lotto)
-        self.reveal_lotto.place(relx=0.5, rely=0.4)
-
-        self.lotto_label = Label(root, text='The winning Lotto numbers are:')
+        self.lotto_label = Label(root, text='The winning Lotto numbers are:', fg='#506352', bg='#4ad66d', font=20)
         self.lotto_label.place(relx=0.2, rely=0.6)
 
         self.lotto1 = Entry(root, bg='#d62e2e', state='readonly', width=5, font=10)
@@ -77,6 +77,15 @@ class Lotto:
         self.lotto6 = Entry(root, bg='#c659e7', state='readonly', width=5, font=10)
         self.lotto6.place(relx=0.7, rely=0.7)
 
+        self.play_again = Button(root, text='Play Again', fg='#506352', bg='#47b553', command=self.replay)
+        self.play_again.place(relx=0.2, rely=0.8)
+
+        self.check_numbers = Button(root, text='Are you a winner?', fg='#506352', bg='#47b553', command=self.check_lotto_numbers)
+        self.check_numbers.place(relx=0.39, rely=0.8)
+
+        self.claim = Button(root, text='Claim Prize', fg='#506352', bg='#47b553', command=self.claim)
+        self.claim.place(relx=0.64, rely=0.8)
+
         self.lotto_numbers = []
         while len(self.lotto_numbers) < 6:
             number = random.randint(1, 49)
@@ -84,12 +93,19 @@ class Lotto:
                 self.lotto_numbers.append(number)
             print(self.lotto_numbers)
 
-    def replay(self, entry_list):
-        entry_list.append([self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
-                           self.num6.get()])
-        print(entry_list)
-        yes_no = messagebox.askyesno(message='Are you sure you would like to play again?')
+    def replay(self, total_lists, game_list):
+        total_lists = [self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
+                       self.num6.get()]
+        game_list = []
+        game_list.append(total_lists)
+        yes_no = messagebox.askyesno(message='Would you like to play again?')
         if yes_no:
+            self.lotto_numbers = []
+            while len(self.lotto_numbers) < 6:
+                number = random.randint(1, 49)
+                if number not in self.lotto_numbers:
+                    self.lotto_numbers.append(number)
+                print(self.lotto_numbers)
             self.num1.delete(0, 'end')
             self.num2.delete(0, 'end')
             self.num3.delete(0, 'end')
@@ -97,15 +113,52 @@ class Lotto:
             self.num5.delete(0, 'end')
             self.num6.delete(0, 'end')
 
-            self.num1.insert(0, 1)
-            self.num2.insert(0, 1)
-            self.num3.insert(0, 1)
-            self.num4.insert(0, 1)
-            self.num5.insert(0, 1)
-            self.num6.insert(0, 1)
+            self.lotto1.config(state='normal')
+            self.lotto1.delete(0, 'end')
+            self.lotto1.config(state='readonly')
 
-        else:
-            pass
+            self.lotto2.config(state='normal')
+            self.lotto2.delete(0, 'end')
+            self.lotto2.config(state='readonly')
+
+            self.lotto3.config(state='normal')
+            self.lotto3.delete(0, 'end')
+            self.lotto3.config(state='readonly')
+
+            self.lotto4.config(state='normal')
+            self.lotto4.delete(0, 'end')
+            self.lotto4.config(state='readonly')
+
+            self.lotto5.config(state='normal')
+            self.lotto5.delete(0, 'end')
+            self.lotto5.config(state='readonly')
+
+            self.lotto6.config(state='normal')
+            self.lotto6.delete(0, 'end')
+            self.lotto6.config(state='readonly')
+
+    # def replay(self, entry_list):
+    #     entry_list.append([self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
+    #                        self.num6.get()])
+    #     print(entry_list)
+    #     yes_no = messagebox.askyesno(message='Are you sure you would like to play again?')
+    #     if yes_no:
+    #         self.num1.delete(0, 'end')
+    #         self.num2.delete(0, 'end')
+    #         self.num3.delete(0, 'end')
+    #         self.num4.delete(0, 'end')
+    #         self.num5.delete(0, 'end')
+    #         self.num6.delete(0, 'end')
+    #
+    #         self.num1.insert(0, 1)
+    #         self.num2.insert(0, 1)
+    #         self.num3.insert(0, 1)
+    #         self.num4.insert(0, 1)
+    #         self.num5.insert(0, 1)
+    #         self.num6.insert(0, 1)
+    #
+    #     else:
+    #         pass
 
     def generate_lotto(self):
         self.lotto1.config(state='normal')
@@ -137,6 +190,44 @@ class Lotto:
         self.lotto6.delete(0, 'end')
         self.lotto6.insert(0, self.lotto_numbers[5])
         self.lotto6.config(state='readonly')
+
+    def check_lotto_numbers(self):
+        for i i range(len(games_list))
+        try:
+            count = 0
+            if int(self.lotto1.get()) == int(self.num1.get()):
+                count += 1
+            if int(self.lotto2.get()) == int(self.num2.get()):
+                count += 1
+            if int(self.lotto3.get()) == int(self.num3.get()):
+                count += 1
+            if int(self.lotto4.get()) == int(self.num4.get()):
+                count += 1
+            if int(self.lotto5.get()) == int(self.num5.get()):
+                count += 1
+            if int(self.lotto6.get()) == int(self.num6.get()):
+                count += 1
+            if count == 1:
+                messagebox.showinfo(message="You only got 1 correct number. Unfortunately you don't win anything.")
+            elif count == 2:
+                messagebox.showinfo(message='You got 2 correct numbers. You have won R20!')
+            elif count == 3:
+                messagebox.showinfo(message='You got 3 numbers correct. You have won R100,50!')
+            elif count == 4:
+                messagebox.showinfo(message='You got 4 numbers correct. You have won R2384!')
+            elif count == 5:
+                messagebox.showinfo(message='You got 5 numbers correct. You have won R8584!')
+            elif count == 6:
+                messagebox.showinfo(message='CONGRATULATIONS! You won the lottery. You just earned R10 000 000!')
+            else:
+                messagebox.showinfo(message='Unfortunately you have not won anything.')
+
+        except ValueError:
+            messagebox.showerror(message='Make sure you entered a number')
+
+    def claim(self):
+        self.root.destroy()
+        import claim_prize
 
 
 UserID(master)
