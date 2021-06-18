@@ -20,11 +20,14 @@ class UserID:
         self.user_id = Label(root, text='User ID:', fg='#506352', bg='#4ad66d')
         self.user_id.place(relx=0.5, rely=0.1)
         self.user_id_entry = Entry(root, state='readonly')
-        file = open('user_info.txt', 'r')
-        print(file.read())
-        self.user_id_entry.config(state='normal')
-        self.user_id_entry.insert(0, file)
-        self.user_id_entry.config(state='readonly')
+        self.user_id_entry.place(relx=0.65, rely=0.1)
+        with open('user_id.txt', 'r') as file:
+            for line in file:
+                if "User" in line:
+                    user = line[9:-1]
+            self.user_id_entry.config(state='normal')
+            self.user_id_entry.insert(0, user)
+            self.user_id_entry.config(state='readonly')
 
 
 class Lotto:
@@ -192,7 +195,7 @@ class Lotto:
         self.lotto6.config(state='readonly')
 
     def check_lotto_numbers(self):
-        for i i range(len(games_list))
+        for i range(len(games_list))
         try:
             count = 0
             if int(self.lotto1.get()) == int(self.num1.get()):

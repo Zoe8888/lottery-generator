@@ -72,6 +72,8 @@ class LogIn:
             elif relativedelta.relativedelta(current_date, birthday).years >= 18:
                 info_entered = {'name': user, 'email': mail, 'id': ID}
                 self.text_to_file(info_entered)
+                player_id = user + ID[9:-1]
+                self.text_to_file2(player_id)
                 messagebox.showinfo(message="You qualify to play! Let's get started.")
                 self.root.destroy()
                 import window_2
@@ -81,10 +83,12 @@ class LogIn:
             messagebox.showerror(message='Enter a valid ID number.')
 
     def text_to_file(self, text):
-        import json
-        text = json.dumps(text)
-        with open('user_info.txt', 'a+') as user_info:
-            user_info.write(text)
+        with open('user_info.txt', 'a') as user_info:
+            user_info.write(str(text))
+
+    def text_to_file2(self, text):
+        with open('user_id.txt', 'a') as user_id:
+            user_id.write("User ID: {}\n".format(str(text)))
 
 
 LogIn(master)
