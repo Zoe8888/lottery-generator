@@ -2,6 +2,7 @@ import random
 from tkinter import *
 from tkinter import messagebox
 from random import randint
+from playsound import playsound
 
 import main
 
@@ -55,8 +56,8 @@ class Lotto:
         self.num6 = Spinbox(root, from_=0, to=49, width=5, font=10)
         self.num6.place(relx=0.7, rely=0.3)
 
-        self.reveal_lotto = Button(root, text='Reveal Lotto numbers', command=self.generate_lotto, fg='#506352',
-                                   bg='#47b553')
+        self.reveal_lotto = Button(root, text='Reveal Lotto numbers', command=self.generate_lotto,
+                                   fg='#506352', bg='#47b553')
         self.reveal_lotto.place(relx=0.4, rely=0.4)
 
         self.lotto_label = Label(root, text='The winning Lotto numbers are:', fg='#506352', bg='#4ad66d', font=20)
@@ -83,11 +84,14 @@ class Lotto:
         self.play_again = Button(root, text='Play Again', fg='#506352', bg='#47b553', command=self.replay)
         self.play_again.place(relx=0.2, rely=0.8)
 
-        self.check_numbers = Button(root, text='Are you a winner?', fg='#506352', bg='#47b553', command=self.check_lotto_numbers)
+        self.check_numbers = Button(root, text='Are you a winner?', fg='#506352', bg='#47b553',
+                                    command=self.check_lotto_numbers)
         self.check_numbers.place(relx=0.39, rely=0.8)
 
         self.claim = Button(root, text='Claim Prize', fg='#506352', bg='#47b553', command=self.claim)
         self.claim.place(relx=0.64, rely=0.8)
+
+        self.total_lists = []
 
         self.lotto_numbers = []
         while len(self.lotto_numbers) < 6:
@@ -96,11 +100,9 @@ class Lotto:
                 self.lotto_numbers.append(number)
             print(self.lotto_numbers)
 
-    def replay(self, total_lists, game_list):
-        total_lists = [self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
-                       self.num6.get()]
-        game_list = []
-        game_list.append(total_lists)
+        self.total_wins = []
+
+    def replay(self):
         yes_no = messagebox.askyesno(message='Would you like to play again?')
         if yes_no:
             self.lotto_numbers = []
@@ -140,6 +142,8 @@ class Lotto:
             self.lotto6.delete(0, 'end')
             self.lotto6.config(state='readonly')
 
+            self.reveal_lotto.config(state='normal')
+
     # def replay(self, entry_list):
     #     entry_list.append([self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
     #                        self.num6.get()])
@@ -164,6 +168,11 @@ class Lotto:
     #         pass
 
     def generate_lotto(self):
+        game_lists = [self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
+                      self.num6.get()]
+        self.total_lists.append(game_lists)
+        print(self.total_lists)
+
         self.lotto1.config(state='normal')
         self.lotto1.delete(0, 'end')
         self.lotto1.insert(0, self.lotto_numbers[0])
@@ -194,36 +203,39 @@ class Lotto:
         self.lotto6.insert(0, self.lotto_numbers[5])
         self.lotto6.config(state='readonly')
 
+        self.reveal_lotto.config(state='disabled')
+
+        playsound('drum-roll.mp3')
+
     def check_lotto_numbers(self):
-        for i range(len(games_list))
         try:
-            count = 0
-            if int(self.lotto1.get()) == int(self.num1.get()):
-                count += 1
-            if int(self.lotto2.get()) == int(self.num2.get()):
-                count += 1
-            if int(self.lotto3.get()) == int(self.num3.get()):
-                count += 1
-            if int(self.lotto4.get()) == int(self.num4.get()):
-                count += 1
-            if int(self.lotto5.get()) == int(self.num5.get()):
-                count += 1
-            if int(self.lotto6.get()) == int(self.num6.get()):
-                count += 1
-            if count == 1:
-                messagebox.showinfo(message="You only got 1 correct number. Unfortunately you don't win anything.")
-            elif count == 2:
-                messagebox.showinfo(message='You got 2 correct numbers. You have won R20!')
-            elif count == 3:
-                messagebox.showinfo(message='You got 3 numbers correct. You have won R100,50!')
-            elif count == 4:
-                messagebox.showinfo(message='You got 4 numbers correct. You have won R2384!')
-            elif count == 5:
-                messagebox.showinfo(message='You got 5 numbers correct. You have won R8584!')
-            elif count == 6:
-                messagebox.showinfo(message='CONGRATULATIONS! You won the lottery. You just earned R10 000 000!')
-            else:
-                messagebox.showinfo(message='Unfortunately you have not won anything.')
+            total_winnings = 0
+            for x in range(len(self.total_wins)):
+                count = 0
+                _set = self.total_wins[x]
+                for y in range(len(set)):
+                    if _set[y] == self.lotto_numbers[y]:
+                        count += 1
+
+                    winnings_breakdown = {0: 0, 1: 0, 2: 20, 3: 100.50, 4: 2384, 5: 8584, 6: 10000000}
+                    total_winnings += winnings_breakdown[count]
+
+                    messagebox.showinfo(message='You have won R{}'.format(total_winnings))
+
+            # if count == 1:
+            #     messagebox.showinfo(message="You only got 1 correct number. Unfortunately you don't win anything.")
+            # elif count == 2:
+            #     messagebox.showinfo(message='You got 2 correct numbers. You have won R20!')
+            # elif count == 3:
+            #     messagebox.showinfo(message='You got 3 numbers correct. You have won R100,50!')
+            # elif count == 4:
+            #     messagebox.showinfo(message='You got 4 numbers correct. You have won R2384!')
+            # elif count == 5:
+            #     messagebox.showinfo(message='You got 5 numbers correct. You have won R8584!')
+            # elif count == 6:
+            #     messagebox.showinfo(message='CONGRATULATIONS! You won the lottery. You just earned R10 000 000!')
+            # else:
+            #     messagebox.showinfo(message='Unfortunately you have not won anything.')
 
         except ValueError:
             messagebox.showerror(message='Make sure you entered a number')

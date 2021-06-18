@@ -7,8 +7,6 @@ from dateutil import relativedelta
 from datetime import *
 import validate_email
 
-from playsound import playsound
-
 master = Tk()
 # Creating a title
 master.title('Lotto Generator')
