@@ -84,7 +84,7 @@ class Lotto:
         self.play_again = Button(root, text='Play Again', fg='#506352', bg='#47b553', command=self.replay)
         self.play_again.place(relx=0.2, rely=0.8)
 
-        self.check_numbers = Button(root, text='Are you a winner?', fg='#506352', bg='#47b553',
+        self.check_numbers = Button(root, text='Check Winnings', fg='#506352', bg='#47b553',
                                     command=self.check_lotto_numbers)
         self.check_numbers.place(relx=0.39, rely=0.8)
 
@@ -219,8 +219,16 @@ class Lotto:
 
                     winnings_breakdown = {0: 0, 1: 0, 2: 20, 3: 100.50, 4: 2384, 5: 8584, 6: 10000000}
                     total_winnings += winnings_breakdown[count]
+                    win = {winnings_breakdown[count]}
+                    self.text_to_file(win)
 
                     messagebox.showinfo(message='You have won R{}'.format(total_winnings))
+        except ValueError:
+            messagebox.showerror(message='Make sure you entered a number')
+
+    def text_to_file(self, text):
+        with open('prize_money.txt', 'a') as prize:
+            prize.write(str(text))
 
             # if count == 1:
             #     messagebox.showinfo(message="You only got 1 correct number. Unfortunately you don't win anything.")
@@ -236,9 +244,6 @@ class Lotto:
             #     messagebox.showinfo(message='CONGRATULATIONS! You won the lottery. You just earned R10 000 000!')
             # else:
             #     messagebox.showinfo(message='Unfortunately you have not won anything.')
-
-        except ValueError:
-            messagebox.showerror(message='Make sure you entered a number')
 
     def claim(self):
         self.root.destroy()
