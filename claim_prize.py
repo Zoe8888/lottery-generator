@@ -23,6 +23,13 @@ class Prize:
 
         self.prize_amount_entry = Entry(root, state='readonly')
         self.prize_amount_entry.place(relx=0.5, rely=0.1)
+        with open('prize_money.txt', 'r') as file:
+            for line in file:
+                if 'Winnings' in line:
+                    prize = line[:-1]
+            self.prize_amount_entry.config(state='normal')
+            self.prize_amount_entry.insert(0, prize)
+            self.prize_amount_entry.config(state='readonly')
 
         self.banking_info = Label(root, text='Please enter your bank information:', fg='#506352', bg='#4ad66d', font=20)
         self.banking_info.place(relx=0.1, rely=0.2)
@@ -79,7 +86,7 @@ class Prize:
     def convert(self):
         api = "https://v6.exchangerate-api.com/v6/4a704b6911da3fab9b1df53d/latest/ZAR"
         data = requests.get(api).json()
-        result = round(int(self.amount_entry.get()) * data['conversion_rates'][self.currency_entry.get()], 2)
+        result = round(int(self.prize_amount_entry.get()) * data['conversion_rates'][self.currency_entry.get()], 2)
         result_text = "{} {}".format(result, self.currency_entry.get())
         self.answer.config(text=result_text)
 
@@ -100,6 +107,11 @@ class Prize:
                 if 'User' in line:
                     user_id = line[9:-1]
 
+        with open('prize_money.txt', 'r') as file:
+            for line in file:
+                if 'Winnings' in line:
+                    prize = line[:-1]
+
         sender_email_id = 'lottogenerator1@gmail.com'
         receiver_email_id = user_email
         password = 'winnerWinner'
@@ -109,7 +121,7 @@ class Prize:
         msg['To'] = receiver_email_id
         msg['Subject'] = subject
         body = 'Good afternoon/ evening ' + user_name
-        body = body + '\n You have won R'
+        body = body + '\n You have won R' + prize
         body = body + '\n Your details have been saved as the following: \n' \
                       'User ID: ' + user_id
         body = body + '\n Bank: ' + self.variable.get()
@@ -130,7 +142,6 @@ class Prize:
 
         messagebox.showinfo(message='Please check your email for more information. Thank you for playing with us.')
         self.root.destroy()
-
 
 
 Prize(master)
