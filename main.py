@@ -20,38 +20,43 @@ class LogIn:
     def __init__(self, root):
         self.root = root
 
-        self.img = PhotoImage(file='lotto-balls-removebg-preview.png')
-        self.image_label = Label(self.root, image=self.img)
-        self.img = self.img.subsample(10)
-        self.image_label.place(relx=0.5, rely=0.1)
+        # self.img = PhotoImage(file='lotto-balls-removebg-preview.png')
+        # self.image_label = Label(self.root, image=self.img)
+        # self.img = self.img.subsample(10)
+        # self.image_label.place(relx=0.5, rely=0.1)
 
-        self.header = Label(self.root, text='Lotto Generator', fg='#506352', bg='#4ad66d', font=25)
+        self.header = Label(self.root, text='Lotto Generator', fg='#506352', bg='#4ad66d', font=40)
         self.header.place(relx=0.23, rely=0.1)
 
         self.name = Label(self.root, text='Please enter your name:', width=25, fg='#506352', bg='#4ad66d')
-        self.name.place(relx=0.2, rely=0.2)
+        self.name.place(relx=0.2, rely=0.25)
         self.name_entry = Entry(self.root, width=20)
-        self.name_entry.place(relx=0.51, rely=0.2)
+        self.name_entry.place(relx=0.51, rely=0.25)
 
         self.email = Label(self.root, text='Please enter your email:', width=25, fg='#506352', bg='#4ad66d')
-        self.email.place(relx=0.2, rely=0.3)
+        self.email.place(relx=0.2, rely=0.35)
         self.email_entry = Entry(self.root, width=20)
-        self.email_entry.place(relx=0.51, rely=0.3)
+        self.email_entry.place(relx=0.51, rely=0.35)
 
         self.id = Label(self.root, text='Please enter your ID number:', width=25, fg='#506352', bg='#4ad66d')
-        self.id.place(relx=0.2, rely=0.4)
+        self.id.place(relx=0.2, rely=0.45)
         self.id_entry = Entry(self.root, width=20)
-        self.id_entry.place(relx=0.51, rely=0.4)
+        self.id_entry.place(relx=0.51, rely=0.45)
 
-        self.submit_button = Button(self.root, text='Submit', command=self.valid_id, width=10, fg='#506352', bg='#47b553')
-        self.submit_button.place(relx=0.25, rely=0.5)
+        self.address = Label(root, text='Please enter your address:', width=25, fg='#506352', bg='#4ad66d')
+        self.address.place(relx=0.2, rely=0.55)
+        self.address_entry = Entry(root, width=20)
+        self.address_entry.place(relx=0.51, rely=0.55)
+
+        self.submit_button = Button(self.root, text='Submit', command=self.verify, width=10, fg='#506352', bg='#47b553')
+        self.submit_button.place(relx=0.25, rely=0.75)
 
         self.exit_button = Button(self.root, text='Exit', command='exit', width=10, fg='#506352', bg='#47b553')
-        self.exit_button.place(relx=0.55, rely=0.5)
+        self.exit_button.place(relx=0.55, rely=0.75)
 
         self.root.mainloop()
 
-    def valid_id(self):
+    def verify(self):
         try:
             int(self.id_entry.get())
             ID = self.id_entry.get()
@@ -68,7 +73,12 @@ class LogIn:
             elif len((self.id_entry.get())) != 13:
                 raise ValueError
             elif relativedelta.relativedelta(current_date, birthday).years >= 18:
-                info_entered = {'name': user, 'email': mail, 'id': ID}
+
+                info_entered = {
+                    'name': user,
+                    'email': mail,
+                    'id': ID
+                }
                 self.text_to_file(info_entered)
                 player_id = user + ID[9:-1]
                 self.text_to_file2(player_id)
@@ -80,9 +90,11 @@ class LogIn:
         except ValueError:
             messagebox.showerror(message='Enter a valid ID number.')
 
-    def text_to_file(self, text):
+    def text_to_file(self, verify):
         with open('user_info.txt', 'a') as user_info:
-            user_info.write(str(text))
+            user_info.write('Name: {}\n'.format(verify['name'])),
+            user_info.write('Email: {}\n'.format(verify['email'])),
+            user_info.write('ID: {}\n'.format(verify['id']))
 
     def text_to_file2(self, text):
         with open('user_id.txt', 'a') as user_id:
@@ -90,3 +102,4 @@ class LogIn:
 
 
 LogIn(master)
+master.mainloop()
