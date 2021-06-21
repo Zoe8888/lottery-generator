@@ -5,6 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+# Initializing the window
 master = Tk()
 master.title('Claim Your Prize')
 master.geometry('700x550')
@@ -12,6 +13,7 @@ master.resizable('False', 'False')
 master.config(bg='#4ad66d')
 
 
+# Creating and positioning all the labels, buttons and entry points for this window
 class Prize:
     def __init__(self, root):
         self.root = root
@@ -23,6 +25,7 @@ class Prize:
 
         self.prize_amount_entry = Entry(root, state='readonly')
         self.prize_amount_entry.place(relx=0.5, rely=0.1)
+        # Calling information from a text file
         with open('prize_money.txt', 'r') as file:
             for line in file:
                 if 'Total' in line:
@@ -51,6 +54,7 @@ class Prize:
         self.select_bank = Label(root, text='Select your bank:', fg='#506352', bg='#4ad66d')
         self.select_bank.place(relx=0.1, rely=0.35)
 
+        # Creating the options for the bank menu
         self.options = ['Select...', 'ABSA', 'FNB', 'Nedbank', 'Standard Bank']
         self.variable = StringVar(root)
         self.variable.set(self.options[0])
@@ -76,6 +80,7 @@ class Prize:
         self.submit = Button(root, text='Submit', fg='#506352', bg='#47b553', width=20, command=self.send_email)
         self.submit.place(relx=0.1, rely=0.75)
 
+    # Creating the money conversion function
     def convert(self):
         api = "https://v6.exchangerate-api.com/v6/4a704b6911da3fab9b1df53d/latest/ZAR"
         data = requests.get(api).json()
@@ -83,12 +88,9 @@ class Prize:
         self.result_text = "{} {}".format(result, self.currency_entry.get())
         self.answer.config(text=self.result_text)
 
-
-    def play_again(self):
-        self.root.destroy()
-        import window_2
-
+    # Creating the function to send the user a confirmation email with all of their details
     def send_email(self):
+        # Calling the users information from various text files
         with open('user_info.txt', 'r') as file:
             for line in file:
                 if 'Name' in line:
