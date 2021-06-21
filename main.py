@@ -7,6 +7,7 @@ from dateutil import relativedelta
 from datetime import *
 import validate_email
 
+# Initializing window
 master = Tk()
 # Creating a title
 master.title('Lotto Generator')
@@ -16,14 +17,10 @@ master.geometry("700x400")
 master.config(bg="#4ad66d")
 
 
+# Creating and positioning labels, entry points & buttons for the log in window
 class LogIn:
     def __init__(self, root):
         self.root = root
-
-        # self.img = PhotoImage(file='lotto-balls-removebg-preview.png')
-        # self.image_label = Label(self.root, image=self.img)
-        # self.img = self.img.subsample(10)
-        # self.image_label.place(relx=0.5, rely=0.1)
 
         self.header = Label(self.root, text='Lotto Generator', fg='#506352', bg='#4ad66d', font=40)
         self.header.place(relx=0.23, rely=0.1)
@@ -56,6 +53,7 @@ class LogIn:
 
         self.root.mainloop()
 
+    # Creating a function to verify the users information
     def verify(self):
         try:
             int(self.id_entry.get())
@@ -68,10 +66,13 @@ class LogIn:
                 messagebox.showerror(message='Please enter your name')
             elif mail == "":
                 messagebox.showerror(message='Please enter your email address')
+            # Validating the users email
             elif not validate_email.validate_email(mail, verify=True):
                 messagebox.showerror(message='Please enter a valid email address.')
+            # Verifying the users id
             elif len((self.id_entry.get())) != 13:
                 raise ValueError
+            # Verifying the users age
             elif relativedelta.relativedelta(current_date, birthday).years >= 18:
 
                 info_entered = {
@@ -90,12 +91,14 @@ class LogIn:
         except ValueError:
             messagebox.showerror(message='Enter a valid ID number.')
 
+    # Saving the users information to a text file
     def text_to_file(self, verify):
         with open('user_info.txt', 'a') as user_info:
             user_info.write('Name: {}\n'.format(verify['name'])),
             user_info.write('Email: {}\n'.format(verify['email'])),
             user_info.write('ID: {}\n'.format(verify['id']))
 
+    # Generating a unique user id and saving it to a text file
     def text_to_file2(self, text):
         with open('user_id.txt', 'a') as user_id:
             user_id.write("User ID: {}\n".format(str(text)))
