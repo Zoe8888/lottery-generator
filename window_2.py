@@ -4,6 +4,7 @@ from tkinter import messagebox
 from random import randint
 from playsound import playsound
 
+# Initializing the window
 master = Tk()
 # Creating a title
 master.title('Lotto Generator')
@@ -13,6 +14,7 @@ master.geometry("700x700")
 master.config(bg="#4ad66d")
 
 
+# Creating and positioning the label & entry point for the user id
 class UserID:
     def __init__(self, root):
         self.root = root
@@ -20,6 +22,7 @@ class UserID:
         self.user_id.place(relx=0.5, rely=0.1)
         self.user_id_entry = Entry(root, state='readonly')
         self.user_id_entry.place(relx=0.65, rely=0.1)
+        # Importing the user id from a text file
         with open('user_id.txt', 'r') as file:
             for line in file:
                 if "User" in line:
@@ -29,6 +32,7 @@ class UserID:
             self.user_id_entry.config(state='readonly')
 
 
+# Creating and positioning all the labels, buttons & entry points for this window
 class Lotto:
     def __init__(self, root):
         self.root = root
@@ -91,7 +95,9 @@ class Lotto:
         self.claim_prize.place(relx=0.64, rely=0.8)
 
         self.total_lists = []
+        self.total_wins = []
 
+        # Creating a function to generate 6 random numbers between 1 and 49, without duplicates
         self.lotto_numbers = []
         while len(self.lotto_numbers) < 6:
             number = random.randint(1, 49)
@@ -99,8 +105,7 @@ class Lotto:
                 self.lotto_numbers.append(number)
             print(self.lotto_numbers)
 
-        self.total_wins = []
-
+    # Creating a function that allows the user to guess and generate a new set of numbers
     def replay(self):
         yes_no = messagebox.askyesno(message='Would you like to play again?')
         if yes_no:
@@ -143,6 +148,7 @@ class Lotto:
 
             self.reveal_lotto.config(state='normal')
 
+    # Inserting the randomly generated numbers into their entry boxes and changing the state to readonly
     def generate_lotto(self):
         game_lists = [self.num1.get(), self.num2.get(), self.num3.get(), self.num4.get(), self.num5.get(),
                       self.num6.get()]
@@ -182,8 +188,10 @@ class Lotto:
 
         self.reveal_lotto.config(state='disabled')
 
+        # Adding a sound before the lotto numbers are revealed
         playsound('drum-roll.mp3')
 
+    # A function to check if the user has won money or not
     def check_lotto_numbers(self):
         if str(self.num1.get()) == str(self.lotto1.get()):
             self.count = self.count + 1
@@ -198,6 +206,7 @@ class Lotto:
         if str(self.num6.get()) == str(self.lotto6.get()):
             self.count = self.count + 1
         try:
+            # Saving the users results to a text file
             file = open('prize_money.txt', 'a')
             if self.count == 1:
                 messagebox.showinfo(message="You got 1 correct number. Unfortunately you have not won anything.")
