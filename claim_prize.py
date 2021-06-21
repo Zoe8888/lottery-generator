@@ -25,11 +25,13 @@ class Prize:
         self.prize_amount_entry.place(relx=0.5, rely=0.1)
         with open('prize_money.txt', 'r') as file:
             for line in file:
-                if 'Winnings' in line:
-                    prize = line[:-1]
+                if 'Total' in line:
+                    prize = line[6:-1]
             self.prize_amount_entry.config(state='normal')
             self.prize_amount_entry.insert(0, prize)
             self.prize_amount_entry.config(state='readonly')
+
+        self.result_text = None
 
         self.banking_info = Label(root, text='Please enter your bank information:', fg='#506352', bg='#4ad66d', font=20)
         self.banking_info.place(relx=0.1, rely=0.2)
@@ -65,30 +67,22 @@ class Prize:
         self.currency_entry = Entry(root, bg='#e4e4e0')
         self.currency_entry.place(relx=0.5, rely=0.5)
 
-        self.amount = Label(root, text='Enter an amount you want converted: ', fg='#506352', bg='#4ad66d')
-        self.amount.place(relx=0.1, rely=0.55)
-
-        self.amount_entry = Entry(root, bg='#e4e4e0')
-        self.amount_entry.place(relx=0.5, rely=0.55)
-
         self.convert_money = Button(root, text='Convert Prize Money', command=self.convert, fg='#506352', bg='#47b553')
-        self.convert_money.place(relx=0.1, rely=0.65)
+        self.convert_money.place(relx=0.1, rely=0.6)
 
         self.answer = Label(root, bg='#e4e4e0', width=20)
-        self.answer.place(relx=0.5, rely=0.65)
+        self.answer.place(relx=0.5, rely=0.6)
 
         self.submit = Button(root, text='Submit', fg='#506352', bg='#47b553', width=20, command=self.send_email)
         self.submit.place(relx=0.1, rely=0.75)
-
-        self.play_again = Button(root, text='Play again', fg='#506352', bg='#47b553', width=20, command=self.play_again)
-        self.play_again.place(relx=0.47, rely=0.75)
 
     def convert(self):
         api = "https://v6.exchangerate-api.com/v6/4a704b6911da3fab9b1df53d/latest/ZAR"
         data = requests.get(api).json()
         result = round(int(self.prize_amount_entry.get()) * data['conversion_rates'][self.currency_entry.get()], 2)
-        result_text = "{} {}".format(result, self.currency_entry.get())
-        self.answer.config(text=result_text)
+        self.result_text = "{} {}".format(result, self.currency_entry.get())
+        self.answer.config(text=self.result_text)
+
 
     def play_again(self):
         self.root.destroy()
@@ -97,31 +91,26 @@ class Prize:
     def send_email(self):
         with open('user_info.txt', 'r') as file:
             for line in file:
-                if 'name' in line:
-                    user_name = line[9:-1]
-                if 'email' in line:
-                    user_email = line[10:-1]
+                if 'Name' in line:
+                    user_name = line[6:-1]
+                if 'Email' in line:
+                    user_email = line[7:-1]
 
         with open('user_id.txt', 'r') as file:
             for line in file:
                 if 'User' in line:
                     user_id = line[9:-1]
 
-        with open('prize_money.txt', 'r') as file:
-            for line in file:
-                if 'Winnings' in line:
-                    prize = line[:-1]
-
         sender_email_id = 'lottogenerator1@gmail.com'
-        receiver_email_id = user_email
+        receiver_email_id = [user_email]
         password = 'winnerWinner'
         subject = 'Congratulations! You are a winner!'
         msg = MIMEMultipart()
         msg['From'] = sender_email_id
-        msg['To'] = receiver_email_id
+        msg['To'] = ','.join(receiver_email_id)
         msg['Subject'] = subject
         body = 'Good afternoon/ evening ' + user_name
-        body = body + '\n You have won R' + prize
+        body = body + '\n You have won ' + self.result_text
         body = body + '\n Your details have been saved as the following: \n' \
                       'User ID: ' + user_id
         body = body + '\n Bank: ' + self.variable.get()
